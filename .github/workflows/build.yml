@@ -39,3 +39,29 @@ jobs:
       with:
         name: webapp
         path: target/ROOT.war
+
+    # Pasos para construir la imagen Docker
+    - name: Verificar Docker
+      run: |
+        docker version
+        docker info
+      continue-on-error: true
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      with:
+        driver: docker
+        driver-opts: network=host
+
+    - name: Build Docker image locally
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile
+        load: true
+        tags: |
+          ufood:latest
+
+    - name: List Docker images
+      run: docker images ufood
+      shell: bash
