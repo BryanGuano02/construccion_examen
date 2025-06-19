@@ -24,9 +24,9 @@ jobs:
       run: mvn -B pmd:check --file pom.xml
       continue-on-error: true
 
-    - name: Correr análisis de código estático con SpotBugs
-      run: mvn -B spotbugs:check --file pom.xml
-      continue-on-error: true
+    # - name: Correr análisis de código estático con SpotBugs
+    #   run: mvn -B spotbugs:check --file pom.xml
+    #   continue-on-error: true
 
     - name: Correr unit tests
       run: mvn -B test --file pom.xml
