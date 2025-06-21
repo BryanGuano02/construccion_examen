@@ -39,35 +39,8 @@ jobs:
       with:
         name: webapp
         path: target/ROOT.war    # Pasos para construir la imagen Docker
-    - name: Verificar estado de Docker Desktop
-      run: |
-        # Verificar si el servicio Docker Desktop está ejecutándose
-        $dockerDesktopService = Get-Service -Name "com.docker.service" -ErrorAction SilentlyContinue
-        if ($dockerDesktopService -and $dockerDesktopService.Status -ne "Running") {
-            Write-Host "Docker Desktop no está ejecutándose. Intentando iniciar el servicio..."
-            Start-Service "com.docker.service"
-            Start-Sleep -Seconds 30
-        } elseif (!$dockerDesktopService) {
-            Write-Host "El servicio Docker Desktop no está instalado o tiene otro nombre."
-        } else {
-            Write-Host "Docker Desktop está ejecutándose."
-        }
 
-        # Verificar Docker CLI
-        docker --version
-      shell: pwsh
-      continue-on-error: true
-
-    - name: Construir imagen Docker manualmente
+    - name: Contruir la imagen de Docker
       run: |
-        # Verificar si Docker funciona
-        if (docker info) {
-            Write-Host "Docker está disponible. Construyendo la imagen..."
-            docker build -t ufood:latest -f ./Dockerfile .
-            docker images ufood
-        } else {
-            Write-Host "Docker no está disponible. Omitiendo la construcción de la imagen."
-            exit 0
-        }
-      shell: pwsh
-      continue-on-error: true
+        docker build -t u-food .
+        docker tag u-food bryang02/u-food:latest

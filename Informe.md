@@ -98,52 +98,8 @@ El archivo generado se guarda como artefacto para su posterior uso:
 El workflow verifica el estado de Docker Desktop y construye la imagen:
 
 ```yaml
-- name: Verificar estado de Docker Desktop
+- name: Contruir la imagen de Docker
   run: |
-    # Verificar si el servicio Docker Desktop está ejecutándose
-    $dockerDesktopService = Get-Service -Name "com.docker.service" -ErrorAction SilentlyContinue
-    if ($dockerDesktopService -and $dockerDesktopService.Status -ne "Running") {
-        Write-Host "Docker Desktop no está ejecutándose. Intentando iniciar el servicio..."
-        Start-Service "com.docker.service"
-        Start-Sleep -Seconds 30
-    } elseif (!$dockerDesktopService) {
-        Write-Host "El servicio Docker Desktop no está instalado o tiene otro nombre."
-    } else {
-        Write-Host "Docker Desktop está ejecutándose."
-    }
-
-    # Verificar Docker CLI
-    docker --version
-  shell: pwsh
-  continue-on-error: true
-
-- name: Construir imagen Docker manualmente
-  run: |
-    # Verificar si Docker funciona
-    if (docker info) {
-        Write-Host "Docker está disponible. Construyendo la imagen..."
-        docker build -t ufood:latest -f ./Dockerfile .
-        docker images ufood
-    } else {
-        Write-Host "Docker no está disponible. Omitiendo la construcción de la imagen."
-        exit 0
-    }
-  shell: pwsh
-  continue-on-error: true
+    docker build -t u-food .
+    docker tag u-food bryang02/u-food:latest
 ```
-
-## Beneficios del Flujo Implementado
-
-1. **Detección Temprana de Problemas**:
-   - Los errores de compilación se detectan inmediatamente.
-   - El análisis estático identifica problemas potenciales en el código.
-   - Las pruebas unitarias validan el comportamiento esperado.
-
-2. **Consistencia**:
-   - El mismo proceso se ejecuta para cada cambio.
-   - Los entornos de compilación están estandarizados usando GitHub Actions.
-   - La imagen Docker garantiza que la aplicación se ejecuta en un entorno consistente.
-
-3. **Visibilidad**:
-   - Los resultados de cada paso están disponibles en GitHub.
-   - El historial de ejecuciones permite analizar tendencias y problemas recurrentes.
